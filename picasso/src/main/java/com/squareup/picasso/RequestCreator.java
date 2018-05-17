@@ -29,6 +29,7 @@ import android.support.annotation.VisibleForTesting;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -60,6 +61,7 @@ public class RequestCreator {
 
   private boolean noFade;
   private boolean deferred;
+  boolean doOnlyScaleDown;
   private boolean setPlaceholder = true;
   private int placeholderResId;
   private int errorResId;
@@ -268,7 +270,11 @@ public class RequestCreator {
    * specified by {@link #resize(int, int)}.
    */
   public RequestCreator onlyScaleDown() {
-    data.onlyScaleDown();
+    if (!deferred) {
+      data.onlyScaleDown();
+    } else {
+      doOnlyScaleDown = true;
+    }
     return this;
   }
 
@@ -299,7 +305,7 @@ public class RequestCreator {
    * Sets the stable key for this request to be used instead of the URI or resource ID when
    * caching. Two requests with the same value are considered to be for the same resource.
    */
-  public RequestCreator stableKey(@NonNull String stableKey) {
+  public RequestCreator stableKey(@Nullable String stableKey) {
     data.stableKey(stableKey);
     return this;
   }
